@@ -214,3 +214,5 @@ html, body, #root { height: 100%; overflow: hidden; }
 .tip-box { background: #2a2a12; border: 1px solid #8d8a2e; color: #f5f0b8; border-radius: 10px; padding: 8px 12px; margin: 8px 0 10px; font-size: clamp(12px, 1.3vw, 15px); line-height: 1.45; }
 .tip-box.conclusion p { margin: 0; color: #f5f0b8; }
 button:disabled { opacity: 0.5; cursor: not-allowed; }
+.tip-box p { margin: 0 0 6px !important; color: #f5f0b8 !important; }
+.tip-box p:last-child { margin-bottom: 0 !important; }

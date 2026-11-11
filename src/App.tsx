@@ -378,19 +378,18 @@ export default function App() {
 									<>
 										<h1 className="title">Welcome to {GAME_TITLE}</h1>
 										<p className="subtitle">
-											Here you’ll be tested on your physics knowledge and your
-											aim!
+											Here you’ll be tested on your physics knowledge and your aim!
 										</p>
 										<p>
-											The game has {LEVELS.length} exhilarating challenges where
-											your goal is to get the ball onto the target using
-											friction. Our players call this game <i>gripping</i>, all
-											thanks to the friction.
+											The game consists of {LEVELS.length} exhilarating challenges
+											where your goal is to slide the puck into the target using
+											friction concepts. Our players call this game <i>gripping</i>,
+											all thanks to the friction.
 										</p>
 										<p>
-											Don’t have any previous friction knowledge? No worries!
-											Before every level, take a moment to read the information
-											box before trying your hand. Good luck!
+											Don’t have any previous friction knowledge? No worries! Before
+											every level, take a moment to read the information box before
+											trying your hand. Good luck!
 										</p>
 									</>
 								)}
@@ -398,35 +397,43 @@ export default function App() {
 								{titleStep === 1 && (
 									<div className="physics title-physics">
 										<div>
-											<h3>🔬 Same push, every time</h3>
+											<h3>🔬 Same launch, every time</h3>
 											<p>
-												In every level, the object stays the same and so does
-												the force pushing it, so its{" "}
-												<b>initial velocity is always the same</b> too.
+												In every level, the object stays the same, and the launcher
+												provides the same initial velocity. This allows the player to
+												compare how different surfaces affect the puck’s motion. Once
+												the puck is launched, sliding friction acts in the opposite
+												direction of its motion, slowing it down. According to
+												Newton’s Second Law, the net force acting on an object
+												determines its acceleration. In this case, friction causes
+												the puck to decelerate, gradually reducing its velocity until
+												it comes to a stop.
 											</p>
 											<p>
-												As the object slides across the course,{" "}
-												<b>sliding friction</b> works against its motion.
-												Sliding friction is a resistance that happens whenever
-												two surfaces are in contact and moving past each other.
-												So even with the same launch, how far the ball travels
-												depends on the surface it moves across.
+												When you slide the object through the course, sliding
+												friction works to oppose the object’s motion. Even if the
+												puck is launched with the same force, the distance it travels
+												will depend on the surface it moves across. Sliding friction
+												is considered a resistance where two surfaces are in contact
+												and move relative to one another.
 											</p>
 										</div>
 										<div>
 											<h3>🧱 Why surfaces are different</h3>
 											<p>
-												Every surface has tiny bumps and imperfections. As two
-												surfaces rub together, these bumps catch and interlock,
-												which gets in the way of the motion. How strongly a pair
-												of surfaces does this is measured by the{" "}
-												<b>coefficient of friction</b>.
+												Surfaces have tiny bumps and imperfections. As they rub
+												against each other, these bumps hinder the motion by
+												interlocking. The <b>coefficient of friction</b> describes
+												how much friction exists between two surfaces. It is the
+												ratio of the frictional force to the normal force.
 											</p>
 											<p>
-												A <b>higher</b> coefficient means a bigger friction
-												force, so the ball slows down faster and travels a
-												shorter distance. A <b>lower</b> coefficient means less
-												resistance, so the ball travels farther.
+												Each surface has a different coefficient of friction. A
+												higher coefficient of friction means a greater opposing
+												friction force, causing the puck to slow down faster and
+												travel a shorter distance. Conversely, a lower coefficient of
+												friction means less resistance, allowing the puck to travel
+												farther.
 											</p>
 										</div>
 									</div>
@@ -565,7 +572,14 @@ export default function App() {
 								<div className="eyebrow">Hole {level.id} · One shot</div>
 								<h2>{level.name}</h2>
 								<p className="tagline">{level.tagline}</p>
-								<div className="tip-box">💡 {level.tip ?? level.hint}</div>
+								<div className="tip-box">
+									{(level.tip ?? level.hint).split("\n\n").map((para, k) => (
+										<p key={k}>
+											{k === 0 ? "💡 " : ""}
+											{para}
+										</p>
+									))}
+								</div>
 								<h3>Pick a starting surface</h3>
 								<p className="meta">
 									You can switch surfaces any time during play with the buttons
@@ -691,11 +705,12 @@ export default function App() {
 										<h2>🎉 You’ve done it! You’ve cleared all levels.</h2>
 										<div className="tip-box conclusion">
 											<p>
-												Friction’s great in everyday life! Sometimes it works
-												against you, like when you’re trying to slide super fast
-												down a hill or a slide. And sometimes it works with you,
-												especially when you’re trying to grip things, like car
-												tires keeping traction on the road.
+												Friction plays an important role in our everyday lives.
+												Although it can sometimes work against us by slowing objects
+												down, it is also essential for activities such as walking,
+												gripping objects, and maintaining traction between car tires and
+												the road. Without friction, many everyday activities would become
+												extremely difficult!
 											</p>
 										</div>
 										<h3>Your results</h3>
