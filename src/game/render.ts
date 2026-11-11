@@ -446,12 +446,23 @@ export function drawScene(ctx: CanvasRenderingContext2D, level: Level, green: Su
   ctx.beginPath();
   ctx.arc(b.x + 2, b.y + 3, BALL_R, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = '#fff';
-  ctx.strokeStyle = '#333';
-  ctx.lineWidth = 1.5;
+  // Black puck (seen from above): dark body, light rim so it shows on dark surfaces, soft shine
+  ctx.fillStyle = '#111';
   ctx.beginPath();
   ctx.arc(b.x, b.y, BALL_R, 0, Math.PI * 2);
   ctx.fill();
+  ctx.strokeStyle = '#9e9e9e';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.arc(b.x, b.y, BALL_R * 0.6, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(b.x, b.y, BALL_R * 0.75, Math.PI * 1.1, Math.PI * 1.45);
   ctx.stroke();
   if (field && field.ballQ) {
     ctx.fillStyle = field.ballQ > 0 ? '#e53935' : '#1e88e5';

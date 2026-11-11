@@ -10,6 +10,8 @@ import {
 	surfaceById,
 	TARGET_RINGS,
 } from "./game/physics";
+
+const GAME_TITLE = "Trick Shot Physics";
 import {
 	clearProgress,
 	loadProgress,
