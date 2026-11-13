@@ -193,7 +193,26 @@ html, body, #root { height: 100%; overflow: hidden; }
 .controls .rings { font-size: 12px; }
 .controls .hint { display: none; }
 .control-group:last-child { min-width: 0; flex: none; }
-.hint-banner { top: auto; bottom: 74px; font-size: 13px; z-index: 3; }
+.hint-banner { top: 96px; bottom: auto; font-size: 13px; z-index: 3; }
+
+/* Surface bar fills the whole width; keys a little bigger */
+.controls .surface-group { flex: 1 1 auto; position: relative; }
+.controls .surface-group .switcher { flex-wrap: wrap; }
+.controls .surface-group .switcher button { flex: 1 1 auto; justify-content: center; padding: 6px 10px; font-size: 14px; white-space: nowrap; }
+.controls .surface-group .swatch { width: 28px; height: 18px; }
+
+/* Pointer to the surface keys at the start of each attempt */
+.surface-pointer {
+  position: absolute; bottom: calc(100% + 14px); left: 0; z-index: 4;
+  padding: 6px 12px; border-radius: 10px; white-space: nowrap;
+  background: #ffd54f; color: #1a1a1a; font-size: 13px; font-weight: 700;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4); pointer-events: none;
+  animation: pointer-bob 1s ease-in-out infinite;
+}
+.surface-pointer .arrow { position: absolute; left: 24px; top: 100%; margin-top: -4px; color: #ffd54f; font-size: 20px; line-height: 1; }
+@keyframes pointer-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.switcher.pulse { border-radius: 10px; animation: switcher-pulse 1.4s ease-in-out infinite; }
+@keyframes switcher-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 213, 79, 0); } 50% { box-shadow: 0 0 0 4px rgba(255, 213, 79, 0.7); } }
 
 /* Charge controls */
 .charge-row { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }

@@ -72,6 +72,15 @@ export default function App() {
 	const [userCharges, setUserCharges] = useState<Charge[]>([]);
 	const [placeMode, setPlaceMode] = useState<1 | -1 | null>(null);
 	const [tel, setTel] = useState<Telemetry>(EMPTY_TELEMETRY);
+	/** "Switch surfaces here" pointer: shown for 3 s at the start of each attempt. */
+	const [showPointer, setShowPointer] = useState(false);
+	useEffect(() => {
+		if (phase !== "play") return setShowPointer(false);
+		setShowPointer(true);
+		const t = setTimeout(() => setShowPointer(false), 3000);
+		return () => clearTimeout(t);
+	}, [phase, run]);
+	const pointerOn = showPointer && !tel.moving && tel.history.length === 0;
 
 	const level = LEVELS[levelIdx];
 	const surface = surfaceById(surfaceId);
@@ -169,7 +178,6 @@ export default function App() {
 						<span>
 							Hole <b>{level.id}</b>/{TOTAL_HOLES} · {level.name}
 						</span>
-						<span>🎯 One shot · stop on the target</span>
 						<span>
 							Attempt{" "}
 							<b>
@@ -179,7 +187,6 @@ export default function App() {
 								)}
 							</b>
 						</span>
-						<span>🌍 {level.gravityLabel}</span>
 						<span>
 							Surface: <b>{surface.name}</b>
 						</span>
@@ -188,7 +195,7 @@ export default function App() {
 			</header>
 
 			<main className="layout">
-				<div className="stage">
+				<div className="stage" onPointerDown={() => setShowPointer(false)}>
 					<GameCanvas
 						level={level}
 						surface={surface}
@@ -262,11 +269,19 @@ export default function App() {
 								</div>
 							</section>
 							<section className="controls hud-overlay">
-								<div className="control-group">
+								<div className="control-group surface-group">
+									{pointerOn && (
+										<div className="surface-pointer">
+											Switch surfaces here, even mid-roll (keys 1–{SURFACES.length})
+											<span className="arrow">⬇</span>
+										</div>
+									)}
 									<span className="group-label">
 										Surface (keys 1–{SURFACES.length})
 									</span>
-									<div className="switcher">
+									<div
+										className={`switcher ${pointerOn ? "pulse" : ""}`}
+									>
 										{SURFACES.map((s, i) => (
 											<button
 												key={s.id}
@@ -500,7 +515,7 @@ export default function App() {
 														<h3>{l.name}</h3>
 														<p className="tagline">{l.tagline}</p>
 														<p className="meta">
-															🌍 {l.gravityLabel} · launch speed{" "}
+															Launch speed{" "}
 															{(l.launchSpeed / 50).toFixed(1)} m/s
 															{l.bumpers.length + (l.barriers?.length ?? 0)
 																? ` · ${l.bumpers.length + (l.barriers?.length ?? 0)} obstacles`

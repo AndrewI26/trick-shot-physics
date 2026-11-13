@@ -1,4 +1,4 @@
-import { G_EARTH, barrier, boxWalls, circle, polyWalls, rect, vec, type PhysicsLevel } from './physics';
+import { G_EARTH, barrier, boxWalls, circle, rect, vec, type PhysicsLevel } from './physics';
 
 /** Total holes planned. Holes not yet in LEVELS show as "Coming soon". */
 export const TOTAL_HOLES = 6;
@@ -67,7 +67,7 @@ export const LEVELS: Level[] = [
     backdrop: '#2d5a27',
     course: { x: 60, y: 200, w: 880, h: 200 },
     tee: vec(130, 300),
-    target: vec(370, 300), // only 4.8 m from the tee
+    target: vec(610, 300), // 9.6 m from the tee, right up against the water
     // Overshoot and the ball rolls into the pond at the far end.
     zones: [{ shape: rect(700, 200, 240, 200), mat: 'water', label: 'WATER' }],
     walls: boxWalls(60, 200, 880, 200),
@@ -85,49 +85,27 @@ export const LEVELS: Level[] = [
   // ─── 3 ─────────────────────────────────────────────────────────────────────
   {
     id: 3,
-    name: 'Bank Shot',
-    tagline: 'Angle in, angle out',
+    name: 'Target in the Middle',
+    tagline: 'Friction turns motion into heat',
     tip: 'The target is right in the middle! Use what you just learned from the previous two levels to get the puck perfectly in the middle of the playing field.\n\nWhen friction acts on a moving object, some of its kinetic energy is transformed into thermal energy, aka heat. This is why surfaces and objects warm up when rubbing against each other. Energy is conserved, it does not disappear!',
-    hint: 'There’s no straight path. The ball leaves a wall at the same angle it hits it. Use a slippery surface to keep speed through the bounces, then switch to a grippy one to stop on the target.',
+    hint: 'The target is in the middle. A low-friction surface sends the ball past it, so use a higher-friction surface to stop it within the target.',
     gravity: G_EARTH,
     gravityLabel: 'Earth',
     base: 'green',
-    launchSpeed: 560, // 11.2 m/s — it has a long way to go
+    launchSpeed: 420, // 8.4 m/s, same as every hole
     backdrop: '#2d5a27',
-    // Dogleg course: bottom lane → up a corridor → into the top-right pocket.
-    course: { x: 60, y: 110, w: 880, h: 380 },
-    shape: [
-      vec(60, 340),
-      vec(560, 340),
-      vec(560, 110),
-      vec(940, 110),
-      vec(940, 260),
-      vec(700, 260),
-      vec(700, 490),
-      vec(60, 490),
-    ],
-    tee: vec(130, 415),
-    target: vec(820, 185),
+    course: { x: 60, y: 200, w: 880, h: 200 },
+    tee: vec(130, 300),
+    target: vec(500, 300), // middle of the playing field
     zones: [],
-    walls: polyWalls([
-      vec(60, 340),
-      vec(560, 340),
-      vec(560, 110),
-      vec(940, 110),
-      vec(940, 260),
-      vec(700, 260),
-      vec(700, 490),
-      vec(60, 490),
-    ]),
+    walls: boxWalls(60, 200, 880, 200),
     bumpers: [],
     intro: [
-      'The target is hiding around a corner, so you can’t hit it directly. You’ll have to bounce the ball off the walls, like a bank shot in pool or air hockey.',
-      'When the ball hits a wall, the wall pushes straight back out on it. That flips the part of the motion heading into the wall, while the part sliding along the wall carries on. So the ball leaves at the same angle it came in.',
-      'Each bounce isn’t perfect. The wall and ball squash a little and some energy turns into sound and heat, so watch for a sudden drop in the speed graph at every bounce.',
+      'The target is right in the middle of the playing field. Your shot leaves at the same speed as before, so the surface decides where the ball stops.',
     ],
     outro: [
-      'Every bounce sent the ball off at the same angle it arrived, mirrored across the wall. Pool players use this to aim at a spot on the rail instead of at the ball.',
-      'Each bounce was a sudden drop in the speed graph (energy lost in the collision), while friction made the steady slope between bounces. Picking a slippery surface for the long trip and a grippy one at the end is how you controlled both.',
+      'When friction acts on a moving object, some of its kinetic energy is transformed into thermal energy, aka heat. This is why surfaces and objects warm up when rubbing against each other.',
+      'Energy is conserved, it does not disappear! The ball’s motion energy didn’t vanish when it stopped; friction turned it into heat in the ball and the ground.',
     ],
   },
   // ─── 4 ─────────────────────────────────────────────────────────────────────
@@ -140,12 +118,12 @@ export const LEVELS: Level[] = [
     gravity: G_EARTH,
     gravityLabel: 'Earth',
     base: 'green',
-    launchSpeed: 480, // 9.6 m/s
+    launchSpeed: 420, // 8.4 m/s, same as every hole
     backdrop: '#2d5a27',
     course: { x: 60, y: 100, w: 880, h: 400 },
     tee: vec(120, 300),
     target: vec(840, 300),
-    zones: [{ shape: circle(480, 300, 150), mat: 'green', funnel: { strength: 100, pit: 22 } }],
+    zones: [{ shape: circle(480, 300, 150), mat: 'green', funnel: { strength: 140, pit: 22 } }],
     walls: boxWalls(60, 100, 880, 400),
     bumpers: [],
     intro: [
@@ -168,7 +146,7 @@ export const LEVELS: Level[] = [
     gravity: G_EARTH,
     gravityLabel: 'Earth',
     base: 'green',
-    launchSpeed: 500, // 10 m/s
+    launchSpeed: 420, // 8.4 m/s, same as every hole
     backdrop: '#24402f',
     course: { x: 60, y: 100, w: 880, h: 400 },
     tee: vec(120, 300),
@@ -207,7 +185,7 @@ export const LEVELS: Level[] = [
     gravity: G_EARTH,
     gravityLabel: 'Earth',
     base: 'green',
-    launchSpeed: 480, // 9.6 m/s
+    launchSpeed: 420, // 8.4 m/s, same as every hole
     backdrop: '#27465a',
     course: { x: 60, y: 100, w: 880, h: 400 },
     tee: vec(120, 430),
