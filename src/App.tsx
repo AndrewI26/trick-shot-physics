@@ -81,8 +81,34 @@ export default function App() {
 		return () => clearTimeout(t);
 	}, [phase, run]);
 	const pointerOn = showPointer && !tel.moving && tel.history.length === 0;
-
+	/** Has the player switched surface mid-roll yet? Until they do, every roll prompts them to. */
+	const [learnedMidRoll, setLearnedMidRoll] = useState(false);
+	/** Short "Switched to X mid-roll" confirmation. */
+	const [switchToast, setSwitchToast] = useState<string | null>(null);
+	const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+	const rolling = phase === "play" && tel.moving;
+	const rollingRef = useRef(rolling);
+	rollingRef.current = rolling;
+	/** Did the player switch surface during the current roll? Reset on every shot. */
+	const [switchedThisRoll, setSwitchedThisRoll] = useState(false);
 	const level = LEVELS[levelIdx];
+	// Levels with a rollHint get a big box every roll until the player switches.
+	const rollBannerOn = rolling && !!level.rollHint && !switchedThisRoll;
+	const rollPromptOn = rolling && !learnedMidRoll && !level.rollHint;
+
+	/** Change surface; if the ball is rolling, confirm it so players see it works mid-roll. */
+	const pickSurface = (id: SurfaceId) => {
+		setSurfaceId(id);
+		if (!rollingRef.current) return;
+		setLearnedMidRoll(true);
+		setSwitchedThisRoll(true);
+		setSwitchToast(`✓ Switched to ${surfaceById(id).name} mid-roll`);
+		clearTimeout(toastTimer.current);
+		toastTimer.current = setTimeout(() => setSwitchToast(null), 1400);
+	};
+	const pickSurfaceRef = useRef(pickSurface);
+	pickSurfaceRef.current = pickSurface;
+
 	const surface = surfaceById(surfaceId);
 	const attemptsRef = useRef(attempts);
 	attemptsRef.current = attempts;
@@ -147,7 +173,8 @@ export default function App() {
 		const onKey = (e: KeyboardEvent) => {
 			if (phase !== "play") return;
 			const n = Number(e.key);
-			if (n >= 1 && n <= SURFACES.length) setSurfaceId(SURFACES[n - 1].id);
+			if (n >= 1 && n <= SURFACES.length)
+				pickSurfaceRef.current(SURFACES[n - 1].id);
 		};
 		window.addEventListener("keydown", onKey);
 		return () => window.removeEventListener("keydown", onKey);
@@ -213,7 +240,10 @@ export default function App() {
 						onRemoveCharge={(i) =>
 							setUserCharges((cs) => cs.filter((_, k) => k !== i))
 						}
-						onShot={() => setAttempts((a) => a + 1)}
+						onShot={() => {
+							setAttempts((a) => a + 1);
+							setSwitchedThisRoll(false);
+						}}
 						onShotEnd={onShotEnd}
 						onTelemetry={setTel}
 					/>
@@ -269,6 +299,14 @@ export default function App() {
 								</div>
 							</section>
 							<section className="controls hud-overlay">
+								{rollBannerOn && (
+									<div className="roll-banner">
+										<div className="roll-banner-title">
+											Ball is rolling! Switch the surface now.
+										</div>
+										<div className="roll-banner-hint">{level.rollHint}</div>
+									</div>
+								)}
 								<div className="control-group surface-group">
 									{pointerOn && (
 										<div className="surface-pointer">
@@ -276,17 +314,27 @@ export default function App() {
 											<span className="arrow">⬇</span>
 										</div>
 									)}
+									{rollPromptOn && !switchToast && (
+										<div className="surface-pointer rolling">
+											Ball is rolling! Change the surface now: tap one or press 1–
+											{SURFACES.length}
+											<span className="arrow">⬇</span>
+										</div>
+									)}
+									{switchToast && (
+										<div className="surface-pointer toast">{switchToast}</div>
+									)}
 									<span className="group-label">
 										Surface (keys 1–{SURFACES.length})
 									</span>
 									<div
-										className={`switcher ${pointerOn ? "pulse" : ""}`}
+										className={`switcher ${pointerOn || rollPromptOn ? "pulse" : ""}`}
 									>
 										{SURFACES.map((s, i) => (
 											<button
 												key={s.id}
 												className={s.id === surfaceId ? "selected" : ""}
-												onClick={() => setSurfaceId(s.id)}
+												onClick={() => pickSurface(s.id)}
 												title={`${s.name}: friction ${s.friction}`}
 											>
 												<span
@@ -654,6 +702,14 @@ export default function App() {
 									speed, so try a different direction, or switch surfaces at a
 									different moment to change where it stops.
 								</p>
+								{level.rollHint && (
+									<div className="roll-banner static">
+										<div className="roll-banner-title">
+											While the ball is rolling, switch the surface.
+										</div>
+										<div className="roll-banner-hint">{level.rollHint}</div>
+									</div>
+								)}
 								<div className="row">
 									<button className="primary" onClick={startAttempt}>
 										Try again

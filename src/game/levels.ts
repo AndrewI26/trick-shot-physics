@@ -20,6 +20,8 @@ export interface Level extends PhysicsLevel {
   hint: string;
   /** Speed every shot leaves the tee at (px/s). Same every time — only direction is chosen. */
   launchSpeed: number;
+  /** Big box shown while the ball rolls, telling the player to switch surface (and how). */
+  rollHint?: string;
 }
 
 export const LEVELS: Level[] = [
@@ -64,6 +66,8 @@ export const LEVELS: Level[] = [
     gravityLabel: 'Earth',
     base: 'green',
     launchSpeed: 420, // 8.4 m/s, same as hole 1
+    // Starting on grass, switching to sandpaper just before the blue ring lands on the bullseye.
+    rollHint: 'Hint: start on 3 (Grass), then press 5 (Sandpaper) just before the ball reaches the target',
     backdrop: '#2d5a27',
     course: { x: 60, y: 200, w: 880, h: 200 },
     tee: vec(130, 300),
