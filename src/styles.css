@@ -213,6 +213,11 @@ html, body, #root { height: 100%; overflow: hidden; }
 @keyframes pointer-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 .surface-pointer.rolling { background: #ff9800; font-size: 14px; }
 .surface-pointer.rolling .arrow { color: #ff9800; }
+/* Music / sound toggles, pinned to the right of the top bar */
+.audio-toggles { display: flex; gap: 6px; order: 10; margin-left: auto; }
+.audio-toggles button { padding: 4px 10px; font-size: 13px; }
+.audio-toggles button.off { opacity: 0.55; }
+
 /* Big "switch now" box in the green area above the surface buttons (levels with a rollHint) */
 .roll-banner {
   position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%);

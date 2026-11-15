@@ -107,6 +107,7 @@ export default function GameCanvas(props: Props) {
     g.distance = 0;
     g.history = [];
     g.accel = vec(0, 0);
+    sfx.stopRolling();
   }, [props.holeKey]);
 
   // Main loop
@@ -161,16 +162,20 @@ export default function GameCanvas(props: Props) {
           // Scored against wherever the target is at the moment the ball stops.
           const res = scoreAt(p.level, g.ball.p, g.waterHit, targetAt(p.level, g.clock));
           res.hazard = g.hazard;
+          sfx.stopRolling();
+          if (res.hazard === 'water') sfx.splash();
+          else if (res.hazard === 'funnel') sfx.fall();
           if (res.points > 0) {
             sfx.sink();
             g.flash = { text: `${res.ring!.name}! +${res.points}`, until: now + 2500 };
           } else {
-            sfx.oops();
+            if (!res.hazard) sfx.oops();
             g.flash = { text: res.hazard === 'funnel' ? 'Fell in!' : res.water ? 'Splash!' : 'Off target', until: now + 2500 };
           }
           p.onShotEnd(res);
         }
         if (g.shotActive) {
+          sfx.rolling(len(g.ball.v), g.friction);
           g.trail.push({ ...g.ball.p });
           if (g.trail.length > 240) g.trail.shift();
         }
@@ -217,7 +222,10 @@ export default function GameCanvas(props: Props) {
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
-    return () => cancelAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf);
+      sfx.stopRolling();
+    };
   }, []);
 
   const toWorld = (e: React.PointerEvent): Vec => {

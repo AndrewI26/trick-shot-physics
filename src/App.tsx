@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import GameCanvas, { type Telemetry } from "./components/GameCanvas";
 import LevelThumb from "./components/LevelThumb";
+import { audioPrefs, sfx, unlockAudio } from "./game/audio";
 import { LEVELS, TOTAL_HOLES } from "./game/levels";
 import {
 	type Charge,
@@ -98,6 +99,7 @@ export default function App() {
 
 	/** Change surface; if the ball is rolling, confirm it so players see it works mid-roll. */
 	const pickSurface = (id: SurfaceId) => {
+		if (id !== surfaceRef.current) sfx.surface();
 		setSurfaceId(id);
 		if (!rollingRef.current) return;
 		setLearnedMidRoll(true);
@@ -108,6 +110,28 @@ export default function App() {
 	};
 	const pickSurfaceRef = useRef(pickSurface);
 	pickSurfaceRef.current = pickSurface;
+	const surfaceRef = useRef(surfaceId);
+	surfaceRef.current = surfaceId;
+
+	// Sound: browsers only allow audio after a user gesture, so start it on the first one.
+	// Every button gets a click sound (surface buttons have their own).
+	const [musicOn, setMusicOn] = useState(audioPrefs.music);
+	const [soundOn, setSoundOn] = useState(audioPrefs.sound);
+	useEffect(() => {
+		const unlock = () => unlockAudio();
+		const onClick = (e: MouseEvent) => {
+			const b = (e.target as HTMLElement).closest("button");
+			if (b && !b.closest(".switcher")) sfx.click();
+		};
+		window.addEventListener("pointerdown", unlock, true);
+		window.addEventListener("keydown", unlock, true);
+		window.addEventListener("click", onClick, true);
+		return () => {
+			window.removeEventListener("pointerdown", unlock, true);
+			window.removeEventListener("keydown", unlock, true);
+			window.removeEventListener("click", onClick, true);
+		};
+	}, []);
 
 	const surface = surfaceById(surfaceId);
 	const attemptsRef = useRef(attempts);
@@ -195,6 +219,28 @@ export default function App() {
 		<div className="app">
 			<header className="topbar">
 				<div className="brand">⛳ {GAME_TITLE}</div>
+				<div className="audio-toggles">
+					<button
+						className={`small ${musicOn ? "" : "off"}`}
+						onClick={() => {
+							audioPrefs.setMusic(!musicOn);
+							setMusicOn(!musicOn);
+						}}
+						title={musicOn ? "Turn music off" : "Turn music on"}
+					>
+						{musicOn ? "🎵 Music on" : "🎵 Music off"}
+					</button>
+					<button
+						className={`small ${soundOn ? "" : "off"}`}
+						onClick={() => {
+							audioPrefs.setSound(!soundOn);
+							setSoundOn(!soundOn);
+						}}
+						title={soundOn ? "Turn sound effects off" : "Turn sound effects on"}
+					>
+						{soundOn ? "🔊 Sound on" : "🔇 Sound off"}
+					</button>
+				</div>
 				{phase !== "title" && (
 					<button className="small" onClick={() => setPhase("levels")}>
 						☰ Levels
